@@ -1,7 +1,7 @@
 import {useState, useContext, useEffect} from 'react';
 import {Text, TouchableOpacity, StyleSheet, View, Dimensions } from "react-native"
 import { TextInput } from 'react-native-paper';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import axios from 'axios';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -12,13 +12,14 @@ import { CategoryContext } from '../contexts/category';
 import { AuthContext } from '../contexts/auth';
 
 const CreateTransaction = ({route, navigation}) => {
-    const [value, setValue] = route.params?.transaction.value? useState(route.params.transaction.value): useState('');
+    const [value, setValue] = route.params?.transaction.value? useState(route.params.transaction.value): useState('');//first condition for edit transaction
     const [transactionType, setTransactionType] = route.params?.transaction?.type? useState(route.params.transaction.type): useState('Select type');
     const [t_TypeIndex, setT_TypeIndex] = route.params?.transaction?.typeIndex? useState(route.params.transaction.typeIndex) :useState(0);
-    const [date, setDate] = route.params?.transaction.date? useState(route.params.transaction.date): useState(new Date());
-    const [time, setTime] = route.params?.transaction.time? useState(route.params.transaction.time):useState(new Date());
-    const [showDatePicker, setShowDatePicker] = useState(false);
-    const [showTimePicker, setShowTimePicker] = useState(false);
+    const [date, setDate] = route.params?.transaction.date? useState(new Date(route.params.transaction.date)): useState(new Date());
+    const [time, setTime] = route.params?.transaction.time? useState(new Date(route.params.transaction.time)):useState(new Date());
+    // const [showDatePicker, setShowDatePicker] = useState(false);
+    // const [showTimePicker, setShowTimePicker] = useState(false);
+    const [mode, setMode] = useState('date');
     const [category, setCategory] = useState({});
 
     //contexts
@@ -155,21 +156,51 @@ const CreateTransaction = ({route, navigation}) => {
     }
     }
 
-    const onDateChange = (event, selectedDate) => {
-        if (Platform.OS === 'android') {
-          setShowDatePicker(false);
-        }
-            if (event.type !='dismissed'){
-                setShowTimePicker(true);
-                setDate(selectedDate);}
-      }
-      const onTimeChange = (event, selectedTime) => {
-        if (Platform.OS === 'android') {
-          setShowTimePicker(false);
-        }
-            setTime(selectedTime);
-      }
+    // const onDateChange = (event, selectedDate) => {
+    //     if (Platform.OS === 'android') {
+    //       setShowDatePicker(false);
+    //     }
+    //         if (event.type !='dismissed'){
+    //             setShowTimePicker(true);
+    //             setDate(selectedDate);}
+    //   }
+    //   const onTimeChange = (event, selectedTime) => {
+    //     if (Platform.OS === 'android') {
+    //       setShowTimePicker(false);
+    //     }
+    //         setTime(selectedTime);
+    //   }
     
+    //dateTimePickerSetup
+      const onChange = (event, selectedDate) => {
+        const currentDate = selectedDate;
+        if(mode=='date'){
+        setDate(currentDate);
+        } else {
+        setTime(currentDate.getTime());
+        }
+      };
+    
+      const showMode = (currentMode) => {
+        DateTimePickerAndroid.open({
+          value: date,
+          maximumDate: new Date(),
+          onChange,
+          mode: currentMode,
+        })
+      };
+    
+      const showDatepicker = () => {
+        showMode('date');
+        setMode('date');
+      };
+    
+      const showTimepicker = () => {
+        showMode('time');
+        setMode('time');
+      };
+
+
     return ( 
         <View style={styles.mainContainer}>
             <View style={styles.optionsContainer}>
@@ -229,7 +260,7 @@ const CreateTransaction = ({route, navigation}) => {
                     setCategory(e)
                 }}
                 />}
-                {showDatePicker && (
+                {/*showDatePicker && (
                 <DateTimePicker
                   maximumDate={new Date(Date.now())}
                   value={new Date(date)}
@@ -242,14 +273,20 @@ const CreateTransaction = ({route, navigation}) => {
                   mode='time'
                   onChange={onTimeChange}
                 />
-              )} 
+                )*/} 
                 <TouchableOpacity style={[styles.dropdown, styles.dateTimeContainer]}
-                onPress={() =>setShowDatePicker(true)}
+                // onPress={() =>setShowDatePicker(true)}
+                onPress={showDatepicker}
                 >
                     <FontAwesome5 name="calendar-day" size={22}/> 
                     <Text style={[styles.text, {marginLeft: 10, marginRight: 100}]}>
                     {moment(date).format('DD-MM-YYYY')}
                     </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.dropdown, styles.dateTimeContainer]}
+                // onPress={() =>setShowDatePicker(true)}
+                onPress={showTimepicker}
+                >
                     <FontAwesome5 name="clock" size={22} />{/*style={{alignSelf: 'flex-end'}}/> */}
                     <Text style={[styles.text, {marginLeft: 10 }]}>
                     {moment(time).format("hh:mm A")}
