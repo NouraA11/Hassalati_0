@@ -131,7 +131,7 @@ const Account = ({navigation}) => {
                 </Text>
                 </TouchableOpacity>
         </View>
-            <View style={{height: '8%', justifyContent: 'flex-end'}}>
+            <View style={{height: '100%', justifyContent: 'flex-end'}}>
                  <BottomNavBar />
             </View>
         </SafeAreaView>
@@ -142,15 +142,14 @@ export default Account;
 
 const styles = StyleSheet.create({
     mainContainer: {
-        //flex: 1,
+        flex: 1,
         backgroundColor: 'white',
-        //alignItems: 'center',
         height: '100%',
         paddingTop: 40
     },
     secondContainer: {
         alignItems: 'center',
-        height: '65%',
+        height: '64%',
     },
     imageContainer: {
         height: 150,

@@ -173,11 +173,10 @@ const CreateTransaction = ({route, navigation}) => {
     
     //dateTimePickerSetup
       const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate;
         if(mode=='date'){
-        setDate(currentDate);
+        setDate(selectedDate);
         } else {
-        setTime(currentDate.getTime());
+        setTime(selectedDate.getTime());
         }
       };
     

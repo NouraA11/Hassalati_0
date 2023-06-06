@@ -79,11 +79,6 @@ const CreateCategory = ({route, navigation}) => {
     }
     }
 
-    const onSelectIcon = (selectedIcon) => {
-        setShowIconPicker(false);
-        setIcon(selectedIcon.icon)
-      };
-
     return ( 
         <View style={styles.mainContainer}>
             <View style={styles.optionsContainer}>
@@ -104,7 +99,10 @@ const CreateCategory = ({route, navigation}) => {
                     "ellipsis-h"] },
                 ]}
                 content={<FontAwesome5 name={icon} size={32} /> }
-                onSelect={(selectedIcon) => onSelectIcon(selectedIcon)}/>
+                onSelect={(selectedIcon) => {
+                    setShowIconPicker(false);
+                    setIcon(selectedIcon.icon)
+                }}/>
                 </View>
                 <TextInput style={styles.textInput}
                 autoFocus={true}
