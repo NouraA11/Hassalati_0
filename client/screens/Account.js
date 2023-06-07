@@ -59,7 +59,7 @@ const Account = ({navigation}) => {
             base64: true,
         })
         if (pickerResult.canceled === true){
-            setImage({ url: "", public_id: ""})
+            //setImage({ url: "", public_id: ""})
             return;
         }
         //save image to state
@@ -72,10 +72,10 @@ const Account = ({navigation}) => {
         });
         console.log("uploaded response =>", data);
         const as = JSON.parse(await AsyncStorage.getItem("@auth"));
-        as.user = data; //update user info in async storage
+        as.user.image = data.image; //update user info in async storage
         await AsyncStorage.setItem("@auth", JSON.stringify(as));
 
-        setState({...state, user: data }); //update context
+        setState({...state, user: as.user }); //update context
         setImage(data.image);
         console.log('done')
     }
